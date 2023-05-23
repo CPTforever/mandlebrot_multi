@@ -53,6 +53,21 @@ typedef struct TPS_STRUCT {
     Point tr;
 } TPS;
 
+int iterate_c(Point p, size_t max) {
+    double x = 0, y = 0;
+    int iteration = 0;
+    
+    while (x * x + y * y < 4 && iteration < max) {
+        double xtemp = x * x - y * y + p.x;
+        y = 2 * x * y + p.y;
+        x = xtemp;
+
+        ++iteration;
+    }
+
+    return iteration;
+}
+
 color iterate(Point p, size_t max) {
     double x = 0, y = 0;
     size_t iteration = 0;
@@ -139,9 +154,6 @@ void draw_screen(Point bl, Point tr) {
         t->tr.y = (y_diff * (t->height + t->height_offset)) / screen_height + bl.y;
 
         height_offset = t->height_offset + t->height;
-        //printf("(%lf %lf) (%lf %lf)\n", bl.x, bl.y, tr.x, tr.y);
-        //printf("%zu %zu %zu %zu %zu\n", screen_width, screen_height, t->width, t->height, t->height_offset);
-        printf("(%lf %lf) (%lf %lf)\n", t->bl.x, t->bl.y, t->tr.x, t->tr.y);
         pthread_create(p_arr + i, NULL, calculator, t);
     }
 
@@ -220,6 +232,7 @@ int main(int argc, char *argv[]) {
         if (c == 27) {
             break;
         }
+        printf("\n");
 
         draw_screen(bottom_left, top_right);
         printf("[center: (%f, %f)]\n", (top_right.x + bottom_left.x) / 2, (top_right.y + bottom_left.y) / 2);
